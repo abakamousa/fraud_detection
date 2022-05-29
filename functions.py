@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 def info_missing_value (df):
     print("Number of rows of the dataset identity: ", df.shape[0])
     print("Number of columns of the dataset identity: ", df.shape[1])
-    nb = sum([True for idx,row in df.iterrows() if any(row.isnull())])
+    nb = df.isnull().sum(axis=1).sum()
     print("Number of missing values in the dataset : ", nb)
     percentage_missing_id = (nb/(df.shape[0]*df.shape[1]))*100
     print(percentage_missing_id, "% values of the dataset is missing" )
@@ -66,6 +66,13 @@ def missing_value_per_observation (df):
     df_miss = pd.DataFrame(data)
     return df_miss.sort_values(by='Number_of_Missing_Val', ascending=False)
 
+def replace_neg_val(df):
+    numeric_types = ['int8', 'int32', 'int64', 'float16', 'float32', 'float64']
+    for i in df.columns:
+        if (df[i].dtypes in numeric_types) :
+            df.loc[df[i]<0]=0
+    return df
+
 #Nous allons procéder à l'imputation des valeurs manquantes à l'aide de cette règle:
 #* Pour les valeurs numérique, on utilise la moyenne
 #* Pour les valeurs catégorielle, on remplace par la valeur "Unknown" 
@@ -73,13 +80,16 @@ def missing_value_per_observation (df):
 #This function fill missing value according to the rule mentionned previously
 def fill_miss_val (df):
     for i in df.columns:
-        if (df[i].dtypes == 'int64')|(df[i].dtypes == 'float64') :
-            df[i]= df[i].fillna(df[i].mean())
+        numeric_types = ['int8', 'int32', 'int64', 'float16', 'float32', 'float64']
+        if (df[i].dtypes in numeric_types) :
+            df[i] = df[i].fillna(df[i].mean())
+            df[i] = df[i].replace(np.nan, df[i].mean())
+            df[i] = df[i].replace(np.nan, 0)
         elif (df[i].dtypes == 'object'):
             #df[i]= df[i].fillna(df[i].mode()[0]) #utiliser un encodage exemple: XXX/fillna(-99)
             df[i]= df[i].fillna("Unknown")
     number = sum([True for idx,row in df.iterrows() if any(row.isnull())])
-    print("Nombre de valeur manquantes après le remplacement: ", number) 
+    print("Nombre de valeur manquantes après l'imputation: ", number) 
     return df
 
 #This function perform label encoding
@@ -92,8 +102,9 @@ def encode_df (df):
     one_hot_encoded_data = pd.get_dummies(df, columns = colName)
     
     return one_hot_encoded_data
-	
+
+
 def merge_df(df1, df2, param):
-    df_merged = pd.merge(df1, df2, on = param, how = "outer")
+    df_merged = pd.merge(df1, df2, on = param, how = "left")
     return df_merged
 	
