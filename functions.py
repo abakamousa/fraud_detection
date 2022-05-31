@@ -107,4 +107,12 @@ def encode_df (df):
 def merge_df(df1, df2, param):
     df_merged = pd.merge(df1, df2, on = param, how = "left")
     return df_merged
-	
+
+# feature selection
+def select_features(X_train, y_train, X_test):
+    fs = SelectKBest(score_func=f_classif, k=20)
+    fs.fit(X_train, y_train)
+    X_train_fs = fs.transform(X_train)
+    X_test_fs = fs.transform(X_test)
+    return X_train_fs, X_test_fs, fs
+
