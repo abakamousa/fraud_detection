@@ -3,6 +3,9 @@ import pandas            as pd # data processing, CSV file I/O (e.g. pd.read_csv
 import seaborn           as sns
 import matplotlib.pyplot as plt
 
+from sklearn.feature_selection import SelectKBest
+from sklearn.feature_selection import f_classif
+
 
 def info_missing_value (df):
     print("Number of rows of the dataset identity: ", df.shape[0])
