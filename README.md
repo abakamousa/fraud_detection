@@ -7,7 +7,7 @@ Dans le cadre de ce projet, il sera question de mettre en place un modèle préd
 Afin d'utiliser les données mis à disposition par Kaggle, il faudra suivre les étapes suivantes:
 
 - Créez un compte Kaggle sur https://www.kaggle.com. 
-- Dans l'onglet "Account" de votre profil utilisateur (https://www.kaggle.com/<username>/account), sélectionnez "Create API Token". Cela déclenchera le téléchargement de kaggle.json.
+- Dans l'onglet "Account" de votre profil utilisateur (https://www.kaggle.com/ <username> /account), sélectionnez "Create API Token". Cela déclenchera le téléchargement de kaggle.json.
 - Ouvrez le fichier json et vous y trouverez le nom d'utilisateur et la clé. 
 - Copiez la clé et collez-la dans la cellule du notebook lorsque cela vous sera demandée. 
 
