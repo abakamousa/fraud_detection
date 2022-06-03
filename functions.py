@@ -3,18 +3,23 @@ import pandas            as pd # data processing, CSV file I/O (e.g. pd.read_csv
 import seaborn           as sns
 import matplotlib.pyplot as plt
 
+
 from sklearn.feature_selection import SelectKBest
 from sklearn.feature_selection import f_classif
 
+def plot_nas(df: pd.DataFrame):
+    if df.isnull().sum().sum() != 0:
+        na_df = (df.isnull().sum() / len(df)) * 100      
+        na_df = na_df.drop(na_df[na_df == 0].index).sort_values(ascending=False)
+        missing_data = pd.DataFrame({'Missing Ratio %' :na_df})
+        missing_data.plot(kind = "barh")
+        plt.title("Pourcentage de valeurs manquantes par feature")
+        plt.show()
+    else:
+        print('No NAs found')
 
-def info_missing_value (df):
-    print("Number of rows of the dataset identity: ", df.shape[0])
-    print("Number of columns of the dataset identity: ", df.shape[1])
-    nb = df.isnull().sum(axis=1).sum()
-    print("Number of missing values in the dataset : ", nb)
-    percentage_missing_id = (nb/(df.shape[0]*df.shape[1]))*100
-    print(percentage_missing_id, "% values of the dataset is missing" )
-	
+
+
 	
 def reduce_mem_usage(df, verbose=True):
     numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
@@ -44,30 +49,7 @@ def reduce_mem_usage(df, verbose=True):
     if verbose: print('Mem. usage decreased to {:5.2f} Mb ({:.1f}% reduction)'.format(end_mem, 100 * (start_mem - end_mem) / start_mem))
     return df
 
-def outlier_detection(df):
-    for i in df.columns:
-        upper = df[i].mean() + 3*df[i].std()
-        lower = df[i].mean() - 3*df[i].std()
-        df = df[(df[i]<upper) & (df[i]>lower)]
-        return df
-		
-def plot_missing_value_features (df):
-    count1= df.isnull().sum()
-    plt.rcParams["figure.figsize"] = (23,8)
-    fig = sns.barplot(x=count1.index, y=count1)
-    fig.set(xlabel="Feature", ylabel='Nombre de valeurs manquantes')
-    plt.xticks(rotation = 90)
-    plt.show()
-	
-def missing_value_per_observation (df):
-    count_miss_row =[]
-    for idx,row in df.iterrows():
-        count = df.iloc[idx:idx+1,:].isnull().sum().sum()
-        count_miss_row.append(count/df.shape[0])
-    y_obs = range(len(count_miss_row))
-    data = {'Observation':y_obs, 'Number_of_Missing_Val':count_miss_row}
-    df_miss = pd.DataFrame(data)
-    return df_miss.sort_values(by='Number_of_Missing_Val', ascending=False)
+
 
 def replace_neg_val(df):
     numeric_types = ['int8', 'int32', 'int64', 'float16', 'float32', 'float64']
@@ -107,15 +89,12 @@ def encode_df (df):
     return one_hot_encoded_data
 
 
-def merge_df(df1, df2, param):
-    df_merged = pd.merge(df1, df2, on = param, how = "left")
-    return df_merged
 
 # feature selection
 def select_features(X_train, y_train, X_test):
-    fs = SelectKBest(score_func=f_classif, k=20)
+    fs = SelectKBest(score_func=f_classif, k=120)
     fs.fit(X_train, y_train)
     X_train_fs = fs.transform(X_train)
     X_test_fs = fs.transform(X_test)
-    return X_train_fs, X_test_fs, fs
+    return X_train_fs, X_test_fs
 
