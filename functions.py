@@ -68,7 +68,7 @@ def fill_miss_val (df):
         numeric_types = ['int8', 'int32', 'int64', 'float16', 'float32', 'float64']
         if (df[i].dtypes in numeric_types) :
             df[i] = df[i].fillna(df[i].mean())
-            df[i] = df[i].replace(np.nan, df[i].mean())
+            #df[i] = df[i].replace(np.nan, df[i].mean())
             df[i] = df[i].replace(np.nan, 0)
         elif (df[i].dtypes == 'object'):
             #df[i]= df[i].fillna(df[i].mode()[0]) #utiliser un encodage exemple: XXX/fillna(-99)
