@@ -15,4 +15,4 @@ Afin d'utiliser les données mis à disposition par Kaggle, il faudra suivre les
 # Résultats
 
 A venir
-![image](https://user-images.githubusercontent.com/18530355/174146596-232984d9-2d82-4159-90a2-59cbe7e3a0f0.png)
+
